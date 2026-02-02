@@ -1,0 +1,13 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Hapus Aset{% endblock %}
+{% block content %}
+<h1 class="h4">Hapus Aset</h1>
+<p>Masukkan alasan penghapusan untuk aset <strong>{{ object }}</strong>.</p>
+<form method="post" class="mt-3">
+    {% csrf_token %}
+    {% include 'inventaris/_form_fields.html' with form=form %}
+    <button type="submit" class="btn btn-danger">Hapus</button>
+    <a class="btn btn-secondary" href="{% url 'inventaris:asset_detail' object.pk %}">Batal</a>
+</form>
+{% endblock %}
+

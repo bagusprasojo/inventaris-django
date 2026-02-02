@@ -1,0 +1,119 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Form Jadwal{% endblock %}
+{% block content %}
+<h1 class="h4">Form Jadwal Pemeliharaan</h1>
+<form method="post" class="mt-3">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+        <div>{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.asset.id_for_label }}">{{ form.asset.label }}</label>
+        {{ form.asset }}
+        {% for error in form.asset.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.plan_name.id_for_label }}">{{ form.plan_name.label }}</label>
+        {{ form.plan_name }}
+        {% for error in form.plan_name.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.trigger_type.id_for_label }}">{{ form.trigger_type.label }}</label>
+        {{ form.trigger_type }}
+        <div class="form-text">Pilih jenis trigger jadwal: berbasis waktu atau usage.</div>
+        {% for error in form.trigger_type.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div id="time-fields">
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.period.id_for_label }}">{{ form.period.label }}</label>
+            {{ form.period }}
+            {% for error in form.period.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.next_due_date.id_for_label }}">{{ form.next_due_date.label }}</label>
+            {{ form.next_due_date }}
+            {% for error in form.next_due_date.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="usage-fields">
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.usage_interval.id_for_label }}">{{ form.usage_interval.label }}</label>
+            {{ form.usage_interval }}
+            {% for error in form.usage_interval.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.usage_reading_type.id_for_label }}">{{ form.usage_reading_type.label }}</label>
+            {{ form.usage_reading_type }}
+            {% for error in form.usage_reading_type.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.last_usage_value.id_for_label }}">{{ form.last_usage_value.label }}</label>
+            {{ form.last_usage_value }}
+            {% for error in form.last_usage_value.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="{{ form.next_due_usage.id_for_label }}">{{ form.next_due_usage.label }}</label>
+            {{ form.next_due_usage }}
+            {% for error in form.next_due_usage.errors %}
+            <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.status.id_for_label }}">{{ form.status.label }}</label>
+        {{ form.status }}
+        {% for error in form.status.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a class="btn btn-secondary" href="{% url 'inventaris:schedule_list' %}">Kembali</a>
+</form>
+<script>
+    (function () {
+        const triggerField = document.getElementById("id_trigger_type");
+        const timeFields = document.getElementById("time-fields");
+        const usageFields = document.getElementById("usage-fields");
+        if (!triggerField || !timeFields || !usageFields) return;
+
+        function toggleSections() {
+            const trigger = triggerField.value;
+            const showTime = trigger === "TIME";
+            const showUsage = trigger === "USAGE";
+            timeFields.style.display = showTime ? "" : "none";
+            usageFields.style.display = showUsage ? "" : "none";
+        }
+
+        triggerField.addEventListener("change", toggleSections);
+        toggleSections();
+    })();
+</script>
+{% endblock %}
+

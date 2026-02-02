@@ -1,0 +1,11 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Hapus Jadwal{% endblock %}
+{% block content %}
+<h1 class="h4">Hapus Jadwal</h1>
+<p>Yakin ingin menghapus jadwal <strong>{{ object.plan_name }}</strong>?</p>
+<form method="post" class="mt-3">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Hapus</button>
+    <a class="btn btn-secondary" href="{% url 'inventaris:schedule_list' %}">Batal</a>
+</form>
+{% endblock %}

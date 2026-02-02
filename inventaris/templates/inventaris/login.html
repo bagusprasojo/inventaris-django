@@ -1,0 +1,24 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <div class="text-center mb-3">
+                    <div class="small text-muted">Sistem Inventaris Sekolah</div>
+                    <h1 class="h4 mb-0">Login</h1>
+                </div>
+                {% if form.errors %}
+                    <div class="alert alert-danger">Username atau password salah.</div>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    {% include 'inventaris/_form_fields.html' with form=form %}
+                    <button type="submit" class="btn btn-primary w-100">Masuk</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

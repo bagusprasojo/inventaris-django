@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtualenv
+.env/
+venv/
+ENV/
+.env.bak/
+.venv/
+
+# Django
+*.log
+local_settings.py
+*.sqlite3
+media/
+staticfiles/
+
+# Pytest
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project-specific
+env/

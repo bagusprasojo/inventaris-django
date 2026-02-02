@@ -1,0 +1,58 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Detail Aset{% endblock %}
+{% block content %}
+<div class="d-md-none">
+    <div class="alert alert-info py-2">Mode scan QR (read-only)</div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <h1 class="h5">{{ asset.name }}</h1>
+        <dl class="row mb-0">
+            <dt class="col-5">Kode</dt>
+            <dd class="col-7">{{ asset.code }}</dd>
+            <dt class="col-5">Kategori</dt>
+            <dd class="col-7">{{ asset.category }}</dd>
+            <dt class="col-5">Lokasi</dt>
+            <dd class="col-7">{{ asset.current_location }}</dd>
+            <dt class="col-5">Status</dt>
+            <dd class="col-7">{{ asset.get_status_display }}</dd>
+            <dt class="col-5">Kondisi</dt>
+            <dd class="col-7">{{ asset.get_condition_display }}</dd>
+            <dt class="col-5">Tanggal Perolehan</dt>
+            <dd class="col-7">{{ asset.acquired_date }}</dd>
+        </dl>
+    </div>
+</div>
+<div class="mt-3">
+    <h2 class="h6">Meter Reading Terbaru</h2>
+    {% with latest=meter_readings|first %}
+        {% if latest %}
+        <div class="card">
+            <div class="card-body py-2">
+                <div><strong>{{ latest.get_reading_type_display }}</strong>: {{ latest.reading_value }}</div>
+                <div class="small text-muted">{{ latest.reading_at }}</div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-muted">Belum ada data</div>
+        {% endif %}
+    {% endwith %}
+</div>
+<div class="mt-3">
+    <h2 class="h6">Foto Aset</h2>
+    <div class="row g-2">
+        {% for photo in asset_photos %}
+        <div class="col-6">
+            <div class="card">
+                <img src="{{ photo.image.url }}" class="card-img-top" alt="Foto">
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-muted">Belum ada foto</div>
+        {% endfor %}
+    </div>
+</div>
+<div class="mt-3">
+    <a class="btn btn-secondary" href="{% url 'inventaris:asset_list' %}">Kembali</a>
+</div>
+{% endblock %}

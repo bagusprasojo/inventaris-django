@@ -1,0 +1,68 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Laporan Aset{% endblock %}
+{% block content %}
+<h1 class="h4">Laporan Aset</h1>
+<form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-3">
+        <label class="form-label">Status</label>
+        <select name="status" class="form-select">
+            <option value="">Semua</option>
+            {% for value,label in assets.model.STATUS_CHOICES %}
+            <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Kategori</label>
+        <select name="category" class="form-select">
+            <option value="">Semua</option>
+            {% for item in categories %}
+            <option value="{{ item.id }}" {% if request.GET.category == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Lokasi</label>
+        <select name="location" class="form-select">
+            <option value="">Semua</option>
+            {% for item in locations %}
+            <option value="{{ item.id }}" {% if request.GET.location == item.id|stringformat:"s" %}selected{% endif %}>{{ item.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a class="btn btn-outline-secondary" href="{% url 'inventaris:asset_report' %}">Reset</a>
+    </div>
+</form>
+<div class="mb-2">
+    <a class="btn btn-outline-success btn-sm" href="{% url 'inventaris:asset_report_excel' %}?{{ request.GET.urlencode }}">Export Excel</a>
+    <a class="btn btn-outline-danger btn-sm" href="{% url 'inventaris:asset_report_pdf' %}?{{ request.GET.urlencode }}">Export PDF</a>
+</div>
+<table class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>Kode</th>
+            <th>Nama</th>
+            <th>Kategori</th>
+            <th>Lokasi</th>
+            <th>Status</th>
+            <th>Kondisi</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in assets %}
+        <tr>
+            <td>{{ item.code }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.category }}</td>
+            <td>{{ item.current_location }}</td>
+            <td>{{ item.get_status_display }}</td>
+            <td>{{ item.get_condition_display }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6" class="text-center">Belum ada data</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

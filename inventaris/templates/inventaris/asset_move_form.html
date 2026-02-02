@@ -1,0 +1,22 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Mutasi Lokasi{% endblock %}
+{% block content %}
+<h1 class="h4">Mutasi Lokasi</h1>
+<div class="card mb-3">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4">Nama Aset</dt>
+            <dd class="col-sm-8">{{ object.name }}</dd>
+            <dt class="col-sm-4">Lokasi Saat Ini</dt>
+            <dd class="col-sm-8">{{ object.current_location }}</dd>
+        </dl>
+    </div>
+</div>
+<form method="post" class="mt-3">
+    {% csrf_token %}
+    {% include 'inventaris/_form_fields.html' with form=form %}
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a class="btn btn-secondary" href="{% url 'inventaris:asset_detail' object.pk %}">Kembali</a>
+</form>
+{% endblock %}
+

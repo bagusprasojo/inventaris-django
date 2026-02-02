@@ -1,0 +1,48 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Jadwal Pemeliharaan{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Jadwal Pemeliharaan</h1>
+    <a class="btn btn-primary" href="{% url 'inventaris:schedule_create' %}">Tambah</a>
+</div>
+<table class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>Aset</th>
+            <th>Nama Jadwal</th>
+            <th>Trigger</th>
+            <th>Periode</th>
+            <th>Next Due</th>
+            <th>Usage Interval</th>
+            <th>Usage Type</th>
+            <th>Last Usage</th>
+            <th>Next Due Usage</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in schedules %}
+        <tr>
+            <td>{{ item.asset }}</td>
+            <td>{{ item.plan_name }}</td>
+            <td>{{ item.get_trigger_type_display }}</td>
+            <td>{{ item.get_period_display|default:"-" }}</td>
+            <td>{{ item.next_due_date|default:"-" }}</td>
+            <td>{{ item.usage_interval|default:"-" }}</td>
+            <td>{{ item.get_usage_reading_type_display|default:"-" }}</td>
+            <td>{{ item.last_usage_value|default:"-" }}</td>
+            <td>{{ item.next_due_usage|default:"-" }}</td>
+            <td>{{ item.get_status_display }}</td>
+            <td>
+                <a href="{% url 'inventaris:schedule_update' item.pk %}">Edit</a>
+                |
+                <a class="text-danger" href="{% url 'inventaris:schedule_delete' item.pk %}">Hapus</a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="11" class="text-center">Belum ada data</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

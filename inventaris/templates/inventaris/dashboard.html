@@ -1,0 +1,160 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 class="h4">Dashboard</h1>
+<div class="row g-3 mt-1">
+    <div class="col-md-6">
+        <div class="card border-warning">
+            <div class="card-body">
+                <h2 class="h6 text-warning">Jadwal Jatuh Tempo (Hari Ini)</h2>
+                <p class="mb-2">Tanggal: {{ today }}</p>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Aset</th>
+                            <th>Periode</th>
+                            <th>Next Due</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in due_schedules %}
+                        <tr>
+                            <td>{{ item.asset }}</td>
+                            <td>{{ item.get_period_display }}</td>
+                            <td>{{ item.next_due_date }}</td>
+                            <td>{{ item.get_status_display }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4" class="text-center">Tidak ada jadwal hari ini</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a class="btn btn-sm btn-outline-warning" href="{% url 'inventaris:schedule_list' %}">Lihat semua jadwal</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-body">
+                <h2 class="h6 text-danger">Jadwal Terlambat</h2>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Aset</th>
+                            <th>Periode</th>
+                            <th>Next Due</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in overdue_schedules %}
+                        <tr>
+                            <td>{{ item.asset }}</td>
+                            <td>{{ item.get_period_display }}</td>
+                            <td>{{ item.next_due_date }}</td>
+                            <td>{{ item.get_status_display }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4" class="text-center">Tidak ada jadwal terlambat</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a class="btn btn-sm btn-outline-danger" href="{% url 'inventaris:schedule_list' %}">Lihat semua jadwal</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-3 mt-3">
+    <div class="col-md-6">
+        <div class="card border-info">
+            <div class="card-body">
+                <h2 class="h6 text-info">Usage Hampir Due (Warning)</h2>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Aset</th>
+                            <th>Tipe</th>
+                            <th>Current Usage</th>
+                            <th>Next Due Usage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in usage_warning_schedules %}
+                        <tr>
+                            <td>{{ item.schedule.asset }}</td>
+                            <td>{{ item.schedule.get_usage_reading_type_display|default:"-" }}</td>
+                            <td>{{ item.current_usage }}</td>
+                            <td>{{ item.next_due_usage }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4" class="text-center">Tidak ada usage warning</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a class="btn btn-sm btn-outline-info" href="{% url 'inventaris:schedule_list' %}">Lihat semua jadwal</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-warning">
+            <div class="card-body">
+                <h2 class="h6 text-warning">Usage Due (Meter Tepat Batas)</h2>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Aset</th>
+                            <th>Tipe</th>
+                            <th>Current Usage</th>
+                            <th>Next Due Usage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in usage_due_schedules %}
+                        <tr>
+                            <td>{{ item.schedule.asset }}</td>
+                            <td>{{ item.schedule.get_usage_reading_type_display|default:"-" }}</td>
+                            <td>{{ item.current_usage }}</td>
+                            <td>{{ item.next_due_usage }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4" class="text-center">Tidak ada usage due</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a class="btn btn-sm btn-outline-warning" href="{% url 'inventaris:schedule_list' %}">Lihat semua jadwal</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-body">
+                <h2 class="h6 text-danger">Usage Overdue (Meter Lewat Batas)</h2>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Aset</th>
+                            <th>Tipe</th>
+                            <th>Current Usage</th>
+                            <th>Next Due Usage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in usage_overdue_schedules %}
+                        <tr>
+                            <td>{{ item.schedule.asset }}</td>
+                            <td>{{ item.schedule.get_usage_reading_type_display|default:"-" }}</td>
+                            <td>{{ item.current_usage }}</td>
+                            <td>{{ item.next_due_usage }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4" class="text-center">Tidak ada usage overdue</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <a class="btn btn-sm btn-outline-danger" href="{% url 'inventaris:schedule_list' %}">Lihat semua jadwal</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

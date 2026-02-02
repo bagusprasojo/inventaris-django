@@ -1,0 +1,12 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Tambah Foto Pemeliharaan{% endblock %}
+{% block content %}
+<h1 class="h4">Tambah Foto Pemeliharaan</h1>
+<form method="post" enctype="multipart/form-data" class="mt-3">
+    {% csrf_token %}
+    {% include 'inventaris/_form_fields.html' with form=form %}
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a class="btn btn-secondary" href="{% url 'inventaris:maintenance_detail' view.kwargs.pk %}">Kembali</a>
+</form>
+{% endblock %}
+

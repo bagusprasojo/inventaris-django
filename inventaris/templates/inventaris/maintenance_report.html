@@ -1,0 +1,58 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Laporan Pemeliharaan{% endblock %}
+{% block content %}
+<h1 class="h4">Laporan Pemeliharaan</h1>
+<form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-3">
+        <label class="form-label">Dari</label>
+        <input type="date" name="from" value="{{ request.GET.from }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Sampai</label>
+        <input type="date" name="to" value="{{ request.GET.to }}" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Tipe</label>
+        <select name="type" class="form-select">
+            <option value="">Semua</option>
+            {% for value,label in maintenances.model.TYPE_CHOICES %}
+            <option value="{{ value }}" {% if request.GET.type == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a class="btn btn-outline-secondary" href="{% url 'inventaris:maintenance_report' %}">Reset</a>
+    </div>
+</form>
+<div class="mb-2">
+    <a class="btn btn-outline-success btn-sm" href="{% url 'inventaris:maintenance_report_excel' %}?{{ request.GET.urlencode }}">Export Excel</a>
+    <a class="btn btn-outline-danger btn-sm" href="{% url 'inventaris:maintenance_report_pdf' %}?{{ request.GET.urlencode }}">Export PDF</a>
+</div>
+<table class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>Aset</th>
+            <th>Tipe</th>
+            <th>Tanggal</th>
+            <th>Kondisi Sebelum</th>
+            <th>Kondisi Sesudah</th>
+            <th>Biaya</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in maintenances %}
+        <tr>
+            <td>{{ item.asset }}</td>
+            <td>{{ item.get_type_display }}</td>
+            <td>{{ item.performed_at }}</td>
+            <td>{{ item.get_condition_before_display }}</td>
+            <td>{{ item.get_condition_after_display }}</td>
+            <td>{{ item.cost }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6" class="text-center">Belum ada data</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

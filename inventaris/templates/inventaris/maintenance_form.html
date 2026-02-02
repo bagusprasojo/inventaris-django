@@ -1,0 +1,151 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Form Pemeliharaan{% endblock %}
+{% block content %}
+<h1 class="h4">Form Pemeliharaan</h1>
+<form method="post" class="mt-3">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+        <div>{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.asset.id_for_label }}">{{ form.asset.label }}</label>
+        {{ form.asset }}
+        {% for error in form.asset.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.type.id_for_label }}">{{ form.type.label }}</label>
+        {{ form.type }}
+        {% for error in form.type.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.schedule.id_for_label }}">{{ form.schedule.label }}</label>
+        {{ form.schedule }}
+        {% for error in form.schedule.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+        <div class="form-text">Pilih jadwal jika pemeliharaan rutin.</div>
+    </div>
+
+    <div id="reading-block" class="mb-3" style="display:none;">
+        <label class="form-label" for="{{ form.reading_value.id_for_label }}">{{ form.reading_value.label }}</label>
+        <div class="input-group">
+            {{ form.reading_value }}
+            <span class="input-group-text" id="reading-type-label">Usage</span>
+        </div>
+        <div class="form-text">Input sesuai tipe reading jadwal.</div>
+        {% for error in form.reading_value.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.condition_before.id_for_label }}">{{ form.condition_before.label }}</label>
+        {{ form.condition_before }}
+        {% for error in form.condition_before.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.condition_after.id_for_label }}">{{ form.condition_after.label }}</label>
+        {{ form.condition_after }}
+        {% for error in form.condition_after.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.cost.id_for_label }}">{{ form.cost.label }}</label>
+        {{ form.cost }}
+        {% for error in form.cost.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.performed_at.id_for_label }}">{{ form.performed_at.label }}</label>
+        {{ form.performed_at }}
+        {% for error in form.performed_at.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.note.id_for_label }}">{{ form.note.label }}</label>
+        {{ form.note }}
+        {% for error in form.note.errors %}
+        <div class="invalid-feedback d-block">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Simpan</button>
+    <a class="btn btn-secondary" href="{% url 'inventaris:maintenance_list' %}">Kembali</a>
+</form>
+
+<script>
+    (function () {
+        const assetSelect = document.getElementById("id_asset");
+        const scheduleSelect = document.getElementById("id_schedule");
+        const readingBlock = document.getElementById("reading-block");
+        const readingTypeLabel = document.getElementById("reading-type-label");
+        if (!assetSelect || !scheduleSelect || !readingBlock || !readingTypeLabel) return;
+
+        function resetSchedules() {
+            scheduleSelect.innerHTML = "";
+            const opt = document.createElement("option");
+            opt.value = "";
+            opt.textContent = "---------";
+            scheduleSelect.appendChild(opt);
+        }
+
+        function updateReadingUI(usageTypeLabel) {
+            if (usageTypeLabel) {
+                readingBlock.style.display = "";
+                readingTypeLabel.textContent = usageTypeLabel;
+            } else {
+                readingBlock.style.display = "none";
+                readingTypeLabel.textContent = "Usage";
+            }
+        }
+
+        async function fetchSchedules(assetId) {
+            resetSchedules();
+            updateReadingUI("");
+            if (!assetId) return;
+            const resp = await fetch("{% url 'inventaris:schedule_options' %}?asset_id=" + assetId);
+            if (!resp.ok) return;
+            const data = await resp.json();
+            for (const item of data.options || []) {
+                const opt = document.createElement("option");
+                opt.value = item.id;
+                opt.textContent = item.label;
+                opt.dataset.usageTypeLabel = item.usage_type_label || "";
+                scheduleSelect.appendChild(opt);
+            }
+        }
+
+        assetSelect.addEventListener("change", (e) => {
+            fetchSchedules(e.target.value);
+        });
+
+        scheduleSelect.addEventListener("change", () => {
+            const selected = scheduleSelect.options[scheduleSelect.selectedIndex];
+            const usageLabel = selected ? selected.dataset.usageTypeLabel : "";
+            updateReadingUI(usageLabel);
+        });
+
+        fetchSchedules(assetSelect.value);
+    })();
+</script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'inventaris/base.html' %}
+{% block title %}Riwayat Lokasi{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h4 mb-0">Riwayat Lokasi</h1>
+        <div class="text-muted">{{ asset }}</div>
+    </div>
+    <a class="btn btn-primary" href="{% url 'inventaris:asset_move' asset.pk %}">Mutasi Lokasi</a>
+</div>
+<table class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>Dari</th>
+            <th>Ke</th>
+            <th>Tanggal</th>
+            <th>Oleh</th>
+            <th>Catatan</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in histories %}
+        <tr>
+            <td>{{ item.from_location|default:"-" }}</td>
+            <td>{{ item.to_location }}</td>
+            <td>{{ item.moved_at }}</td>
+            <td>{{ item.moved_by }}</td>
+            <td>{{ item.note|default:"-" }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5" class="text-center">Belum ada data</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div>
+    <a class="btn btn-secondary" href="{% url 'inventaris:asset_detail' asset.pk %}">Kembali</a>
+</div>
+{% endblock %}
